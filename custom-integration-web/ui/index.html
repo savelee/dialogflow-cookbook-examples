@@ -49,6 +49,9 @@
                 messages.appendChild(agent);  
             }
         });
+
+        //welcome
+        socketio.emit('welcome');
     });
 
     //e) Create some pointers to other HTML elements

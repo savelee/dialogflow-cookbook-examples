@@ -36,6 +36,14 @@ io.on('connect', (client) => {
     console.log(`Client connected [id=${client.id}]`);
     client.emit('server_setup', `Server connected [id=${client.id}]`);
 
+
+    // 7B When the client sends 'welcome' events
+    // then execute this block
+    client.on('welcome', async function() {
+        const welcomeResults = await detectIntentByEventName('welcome');
+        client.emit('returnResults', welcomeResults);
+    });
+
     //7) When the client sends 'message' events
     // then execute this block
     client.on('message', async function(msg) {
@@ -69,11 +77,7 @@ function setupDialogflow(){
     //13) These objects are in the Dialogflow request
     request = {
       session: sessionPath,
-      queryInput: {
-        text: {
-            languageCode: languageCode
-        }
-      }
+      queryInput: {}
     }
 }
 
@@ -84,12 +88,31 @@ function setupDialogflow(){
   */
  async function detectIntent(text){
     //14) Get the user utterance from the UI
-    request.queryInput.text.text = text;
+    request.queryInput.text =  {
+        languageCode: languageCode,
+        text: text
+    };
     console.log(request);
     
     //15) The Dialogflow SDK method for intent detection.
     // It returns a Promise, which will be resolved once the
     // fulfillment data comes in.
+    const responses = await sessionClient.detectIntent(request);
+    return responses;
+ }
+
+
+ /*
+  * Dialogflow Detect Intent based on an Event
+  * @param eventName - string
+  * @return response promise
+  */
+ //16 
+ async function detectIntentByEventName(eventName){
+    request.queryInput.event =  {
+        languageCode: languageCode,
+        name: eventName
+    };
     const responses = await sessionClient.detectIntent(request);
     return responses;
  }

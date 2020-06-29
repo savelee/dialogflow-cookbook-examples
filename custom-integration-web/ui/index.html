@@ -5,8 +5,8 @@
     <title>Custom Web Chat</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
-    <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -27,12 +27,21 @@
 
 
     <script>
+
+    //a) Load socket io
     const socketio = io();
+    
+    //b) Once socket.io made a connection with a server app,
+    // execute this block
     const socket = socketio.on('connect', function() {
         console.log('connected');
 
+        //c) Run this block when the server responds with a fulfillment
         socketio.on('returnResults', function (data) {
             console.log(data);
+
+            //d) If there are queryResults then dynamically
+            // create list items to append to the messages list.
             if(data[0].queryResult){
                 var agent = document.createElement("li");
                 agent.className = 'balloon agent';
@@ -42,11 +51,14 @@
         });
     });
 
+    //e) Create some pointers to other HTML elements
     const textarea = document.getElementById('textarea');
     const textInput = document.getElementById('queryText');
     const submitBtn = document.getElementById('submit');
     const messages = document.getElementById('messages');
     
+    //f) On submit of a user utterance,
+    // create list items to append to the messages list.
     submitBtn.onclick = function(e) {
         e.preventDefault();
         socketio.emit('message', textInput.value);

@@ -1,43 +1,51 @@
+//1) These system variables can be set from the command-line with --PROJECT_ID, --PORT and --LANGUAGE
 const projectId = process.env.npm_config_PROJECT_ID;
 const port = ( process.env.npm_config_PORT || 3000 );
 const languageCode = (process.env.npm_config_LANGUAGE || 'en-US');
 
-// load all the libraries for the server
+//2) Load all the libraries needed by this app
 const socketIo = require('socket.io');
 const http = require('http');
 const cors = require('cors');
 const express = require('express');
 const path = require('path');
-
-// load all the libraries for the Dialogflow part
+// These are specific to Dialogflow
 const uuid = require('uuid');
 const df = require('dialogflow').v2beta1;
 
-// create an express app
+//3) Create an express app
 const app = express();
 
-// setup Express
+//4) Setup Express, and load the static files and HTML page
 app.use(cors());
 app.use(express.static(__dirname + '/../ui/'));
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/../ui/index.html'));
 });
+
+//5) Create the Server and listen to the PORT variable
 server = http.createServer(app);
 io = socketIo(server);
 server.listen(port, () => {
     console.log('Running server on port %s', port);
 });
 
- // Listener, once the client connect to the server socket
- io.on('connect', (client) => {
+//6 Socket.io listener, once the client connect to the server socket
+// then execute this block.
+io.on('connect', (client) => {
     console.log(`Client connected [id=${client.id}]`);
     client.emit('server_setup', `Server connected [id=${client.id}]`);
 
-    // when the client sends 'message' events
+    //7) When the client sends 'message' events
+    // then execute this block
     client.on('message', async function(msg) {
         //console.log(msg);
+
+        //8) A promise to do intent matching
         const results = await detectIntent(msg);
         console.log(results);
+
+        //9) Return the Dialogflow after intent matching to the client UI.
         client.emit('returnResults', results);
     });
 });
@@ -46,15 +54,19 @@ server.listen(port, () => {
  * Setup Dialogflow Integration
  */
 function setupDialogflow(){
-    // Dialogflow will need a session Id
+    //10) Dialogflow will need a session Id
     sessionId = uuid.v4();
-    // Dialogflow will need a DF Session Client
+    
+    //11) Dialogflow will need a DF Session Client
     // So each DF session is unique
     sessionClient = new df.SessionsClient();
-    // Create a session path from the Session client, 
+    
+    //12) Create a session path from the Session client, 
     // which is a combination of the projectId and sessionId.
     sessionPath = sessionClient.sessionPath(projectId, sessionId);
 
+
+    //13) These objects are in the Dialogflow request
     request = {
       session: sessionPath,
       queryInput: {
@@ -71,10 +83,16 @@ function setupDialogflow(){
   * @return response promise
   */
  async function detectIntent(text){
+    //14) Get the user utterance from the UI
     request.queryInput.text.text = text;
     console.log(request);
+    
+    //15) The Dialogflow SDK method for intent detection.
+    // It returns a Promise, which will be resolved once the
+    // fulfillment data comes in.
     const responses = await sessionClient.detectIntent(request);
     return responses;
  }
 
+ //Run this code.
  setupDialogflow();

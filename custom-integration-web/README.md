@@ -8,12 +8,12 @@
 
 1. cd back-end
 
-2. Install the required libraries, run the following command in this *examples* folder:
+2. Install the required libraries:
 
     `npm install`
 
-3. Start the simpleserver node app:
+3. Start the node app:
 
-   `npm --PORT=3000 --PROJECT_ID=[your-gcp-project-id] run start`
+   `npm --PROJECT_ID=[your-gcp-project-id] run start`
 
 4. Browse to http://localhost:3000

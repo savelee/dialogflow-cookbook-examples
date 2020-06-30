@@ -5,6 +5,7 @@ const port = ( process.env.npm_config_PORT || 3000 );
 const languageCode = (process.env.npm_config_LANGUAGE || 'en-US');
 
 const socketIo = require('socket.io');
+const http = require('http');
 const cors = require('cors');
 const express = require('express');
 const path = require('path');

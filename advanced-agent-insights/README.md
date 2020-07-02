@@ -44,7 +44,7 @@
 1. Go to BigQuery: https://console.cloud.google.com/bigquery?
 
     Click (underneath the resources): **project > chatanalytics > chatmessages** 
-    Press **Previe** and from one of the preview rows, copy the session id, which you can use
+    Press **Preview** and from one of the preview rows, copy the session id, which you can use
     in the SQL query below.
 
     Then use this Query to retrieve a transcript:

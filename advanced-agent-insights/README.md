@@ -43,8 +43,12 @@
 
 1. Go to BigQuery: https://console.cloud.google.com/bigquery?
 
-    Use this Query to query a transcript
+    Click (underneath the resources): **project > chatanalytics > chatmessages** 
+    Press **Previe** and from one of the preview rows, copy the session id, which you can use
+    in the SQL query below.
+
+    Then use this Query to retrieve a transcript:
 
     ```
-    SELECT * FROM `[project_id].chatanalytics.chatmessages` WHERE SESSION='6c72ea2f-b6f5-43c4-be2b-512b4540fd50' ORDER BY POSTED LIMIT 
+    SELECT * FROM `[project_id].chatanalytics.chatmessages` WHERE SESSION='[session-id]' ORDER BY POSTED LIMIT 
     ```

@@ -99,7 +99,7 @@ var detectPIIData = async function(text, callback) {
     var bqRow = {
       BOT_NAME: buf.botName,
       POSTED: (buf.posted/1000),
-      INTENT_RESPONSE: buf.intentResponse.string(),
+      INTENT_RESPONSE: buf.intentResponse.toString(),
       INTENT_NAME: buf.intentName,
       IS_FALLBACK: buf.isFallback, 
       IS_END_INTERACTION: buf.isEndInteraction,   

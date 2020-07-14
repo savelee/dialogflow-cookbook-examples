@@ -1,6 +1,8 @@
+//1)
 const { BigQuery } = require('@google-cloud/bigquery');
 const { PubSub } = require('@google-cloud/pubsub');
 
+//2)
 const pubsub = new PubSub({
     projectId: process.env.npm_config_PROJECT_ID
 });
@@ -9,20 +11,24 @@ const bigquery = new BigQuery({
     projectId: process.env.npm_config_PROJECT_ID
 });
 
+//3)
 const id = process.env.npm_config_PROJECT_ID;
 const dataLocation = 'US';
 const datasetChatMessages = 'chatanalytics';
 const tableChatMessages = 'chatmessages';
 const topicChatbotMessages = 'chatbotanalytics';
 
+//4)
 // tslint:disable-next-line:no-suspicious-comment
 const schemaChatMessages = "BOT_NAME,TEXT,POSTED:TIMESTAMP,SCORE:FLOAT,MAGNITUDE:FLOAT,INTENT_RESPONSE,INTENT_NAME,CONFIDENCE:FLOAT,IS_FALLBACK:BOOLEAN,IS_END_INTERACTION:BOOLEAN,PLATFORM,SESSION";
 
+//5)
 /**
  * Analytics class to store chatbot analytics in BigQuery. 
  */
 class Analytics {
 
+    //6)
     constructor() {
         this.setupBigQuery(datasetChatMessages, 
             tableChatMessages, dataLocation, schemaChatMessages);
@@ -30,6 +36,7 @@ class Analytics {
         this.setupPubSub(topicChatbotMessages);
     }
 
+    //7)
     /**
      * If dataset doesn't exist, create one.
      * If table doesn't exist, create one.
@@ -82,6 +89,7 @@ class Analytics {
         });
     }
 
+    //8)
     /**
      * If topic is not created yet, please create.
      * @param {string} topicName PubSub Topic Name
@@ -102,6 +110,7 @@ class Analytics {
         });
     }
 
+    //9)
     /**
      * Execute Query in BigQuery
      * @param {string} sql SQL Query
@@ -119,26 +128,13 @@ class Analytics {
         });
     }
 
-    /**
-     * Add Item to BigQuery
-     * @param {string} bqDataSetName - the name of the choosen dataset
-     * @param {string} bqTableName - the name of the choosen dataset
-     * @param {bigQueryRow} row - The Object to insert based on schema
-     * @return {Promise<void>}
-     */
-    async insertInBQ(bqDataSetName, bqTableName, row) {
-        const dataset = bigquery.dataset(bqDataSetName);
-        const table = dataset.table(bqTableName);
-        return table.insert(row);
-    }
-
+    //10)
     /**
      * Push to PubSub Channel
      * @param {object} json JSON Object
-     * @param {string} topicName unformed Pub/Sub topic name
      * @return {Promise<any>}
      */
-    async pushToChannel(json, topicName) {
+    async pushToChannel(json) {
         const topic = pubsub.topic(`projects/${id}/topics/${topicChatbotMessages}`);
         let dataBuffer = Buffer.from(JSON.stringify(json), 'utf-8');
         try {

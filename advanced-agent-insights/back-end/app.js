@@ -1,7 +1,7 @@
+//1)
 const analytics = require('../back-end/analytics');
 const structJson = require('../back-end/structToJson');
 
-//1) These system variables can be set from the command-line with --PROJECT_ID, --PORT and --LANGUAGE
 const projectId = process.env.npm_config_PROJECT_ID;
 const port = ( process.env.npm_config_PORT || 3000 );
 const languageCode = (process.env.npm_config_LANGUAGE || 'en-US');
@@ -11,10 +11,10 @@ const http = require('http');
 const cors = require('cors');
 const express = require('express');
 const path = require('path');
-// These are specific to Dialogflow
 const uuid = require('uuid');
 const df = require('dialogflow').v2beta1;
 
+//2)
 const sessionId = uuid.v4();
 
 const app = express();
@@ -40,6 +40,7 @@ io.on('connect', (client) => {
         client.emit('returnResults', welcomeResults);
     });
 
+    //3)
     client.on('message', async function(msg) {
         const results = await detectIntent(msg);
         const result = results[0].queryResult;
@@ -79,7 +80,7 @@ io.on('connect', (client) => {
         try {
             //console.log(obj);
             console.log(analytics);
-            analytics.pushToChannel(obj, process.env.TOPIC);            
+            analytics.pushToChannel(obj);            
         } catch (error) {
             console.log(error)
         }

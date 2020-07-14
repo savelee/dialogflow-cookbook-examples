@@ -1,6 +1,8 @@
+//1)
 const { BigQuery } = require('@google-cloud/bigquery');
 const DLP = require('@google-cloud/dlp');
 
+//2)
 const projectId = process.env.GCLOUD_PROJECT;
 const bqDataSetName = 'chatanalytics'
 const bqTableName = 'chatmessages';
@@ -12,10 +14,14 @@ const dataset = bq.dataset(bqDataSetName);
 // Make use of a BigQuery table called: chatmessages
 const table = dataset.table(bqTableName);
 
+
+//3)
 var detectPIIData = async function(text, callback) {
   // The minimum likelihood required before returning a match
   const minLikelihood = 'LIKELIHOOD_UNSPECIFIED';
  
+
+  //4)
   // The infoTypes of information to match
   const infoTypes = [ 
     {name: 'PERSON_NAME'}, 
@@ -61,6 +67,7 @@ var detectPIIData = async function(text, callback) {
 
   // Run string redaction
   try {
+    //5) 
     const [response] = await dlp.deidentifyContent(request);
     const resultString = response.item.value;
     console.log(`REDACTED TEXT: ${resultString}`);
@@ -76,6 +83,7 @@ var detectPIIData = async function(text, callback) {
 }
 
 
+  //6)
   //Insert rows in BigQuery
   var insertInBq = function(row){
 
@@ -91,6 +99,7 @@ var detectPIIData = async function(text, callback) {
   };
 
 
+  //7)
   exports.subscribe = (data, context) => {
     const pubSubMessage = data;
     const buffer = Buffer.from(pubSubMessage.data, 'base64').toString();
@@ -110,6 +119,7 @@ var detectPIIData = async function(text, callback) {
       MAGNITUDE: buf.magnitude
     };
 
+    //8)
     detectPIIData(buf.text, function(formattedText) {
       bqRow['TEXT'] = formattedText;
       insertInBq(bqRow);

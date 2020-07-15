@@ -1,0 +1,7 @@
+{
+    "WELCOME_BASIC": "Hallo, welkom!",
+    "DELIVERY_DATE": "De datum is %date.",
+    "PRICE": "Het kost %s.",
+    "TOTAL_AMOUNT": "Het totaal is: %s.",
+    "FALLBACK": "Oeps, er ging iets mis. Kun je het opnieuw proberen?"
+ }

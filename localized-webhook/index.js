@@ -7,7 +7,32 @@ const { WebhookClient} = require('dialogflow-fulfillment');
 //1
 const i18n = require('i18n');
 const moment = require('moment');
+require('moment/locale/nl');
+
 const numeral = require('numeral');
+
+numeral.register('locale', 'nl', {
+  delimiters: {
+      thousands: ',',
+      decimal: '.'
+  },
+  abbreviations: {
+      thousand: 'k',
+      million: 'm',
+      billion: 'b',
+      trillion: 't'
+  },
+  ordinal: function (number) {
+      var b = number % 10;
+      return (~~ (number % 100 / 10) === 1) ? 'th' :
+          (b === 1) ? 'st' :
+          (b === 2) ? 'nd' :
+          (b === 3) ? 'rd' : 'th';
+  },
+  currency: {
+      symbol: '€'
+  }
+});
 
 //2
 i18n.configure({
@@ -50,10 +75,9 @@ app.post('/fulfillment', (request, response) => {
 
     //4
     var lang = request.body.queryResult.languageCode;
-    var langCode;
     if(lang === "nl") langCode = "nl-NL";
     if(lang === "en") langCode = "en-US";
-    i18n.setLocale(langCode);
+    i18n.setLocale(lang);
     moment.locale(lang);
     numeral.locale(lang);
 

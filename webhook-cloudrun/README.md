@@ -8,4 +8,4 @@
 
 1. `npm run deploy`
 
-1. Add the Cloudrun URL +/fulfillment to the Fulfillment page in the Dialogflow Console.
+1. Add the Cloud Run URL +/fulfillment to the Fulfillment page in the Dialogflow Console.

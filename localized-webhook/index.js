@@ -28,7 +28,7 @@ function fallback(agent) {
 }
 
 function getPrice(agent) {
-  agent.add(i18n.__('PRICE', numeral(1000).format('399')));
+  agent.add(i18n.__('PRICE', numeral(399).format('($0,0)')));
 }
 
 function getDeliveryDate(agent) {
@@ -54,7 +54,7 @@ app.post('/fulfillment', (request, response) => {
     if(lang === "nl") langCode = "nl-NL";
     if(lang === "en") langCode = "en-US";
     i18n.setLocale(langCode);
-    moment.locale(langCode);
+    moment.locale(lang);
     numeral.locale(lang);
 
     //5

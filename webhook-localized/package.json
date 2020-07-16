@@ -18,7 +18,6 @@
     "body-parser": "^1.19.0",
     "dialogflow-fulfillment": "^0.6.1",
     "express": "^4.17.1",
-    "express-basic-auth": "^1.2.0",
     "i18n": "^0.10.0",
     "moment": "^2.27.0",
     "numeral": "^2.0.6"

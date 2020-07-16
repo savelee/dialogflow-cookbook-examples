@@ -6,10 +6,17 @@ const { WebhookClient} = require('dialogflow-fulfillment');
 
 //1
 const i18n = require('i18n');
+i18n.configure({
+  locales: ['en-US', 'nl-NL'],
+  directory: __dirname + '/locales',
+  defaultLocale: 'en-US'
+});
 
+//2
 const moment = require('moment');
 require('moment/locale/nl');
 
+//3
 const numeral = require('numeral');
 numeral.register('locale', 'nl', {
   delimiters: {
@@ -34,16 +41,10 @@ numeral.register('locale', 'nl', {
   }
 });
 
-//2
-i18n.configure({
-  locales: ['en-US', 'nl-NL'],
-  directory: __dirname + '/locales',
-  defaultLocale: 'en-US'
-});
 
 process.env.DEBUG = 'dialogflow:debug'; // enables lib debugging statements
 
-//3
+//4
 function welcome(agent) {
   agent.add(i18n.__('WELCOME_BASIC'));
 }
@@ -73,7 +74,7 @@ app.post('/fulfillment', (request, response) => {
     console.log('Dialogflow Request headers: ' + JSON.stringify(request.headers));
     console.log('Dialogflow Request body: ' + JSON.stringify(request.body));
 
-    //4
+    //5
     var lang = request.body.queryResult.languageCode;
     var langCode;
     if(lang === "nl") langCode = "nl-NL";
@@ -82,7 +83,7 @@ app.post('/fulfillment', (request, response) => {
     moment.locale(lang);
     numeral.locale(lang);
 
-    //5
+    //6
     let intentMap = new Map();
     intentMap.set('Default Welcome Intent', welcome);
     intentMap.set('Default Fallback Intent', fallback);

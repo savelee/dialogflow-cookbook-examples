@@ -68,14 +68,18 @@ io.on('connect', (client) => {
             platform: platform,
             botName: botName,
             intentResponse: messages,
+            language: result['languageCode'],
+            platforms: result['intent'].defaultResponsePlatforms,
             intentName: result['intent'].displayName,
             isFallback: result['intent'].isFallback,
             isEndInteraction: result['intent'].endInteraction,
             confidence: result['intentDetectionConfidence'],
-            session: sessionId,
+            session: sessionPath,
             score: result['sentimentAnalysisResult'].queryTextSentiment.score,
             magnitude: result['sentimentAnalysisResult'].queryTextSentiment.magnitude
         };
+
+        console.log(obj);
 
         try {
             //console.log(obj);

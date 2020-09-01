@@ -19,7 +19,7 @@
 
         <div class="chatfooter">
             <div class="chatinput">
-                <input id="queryText" class="chatinput" placeholder="Reply to chatbot...">
+                    <input id="queryText" class="chatinput" placeholder="Reply to chatbot...">
             </div>
             <button type="submit" id="submit">Send</button>
         </div>
@@ -39,17 +39,21 @@
         //c) Run this block when the server responds with a fulfillment
         socketio.on('returnResults', function (data) {
             var objDiv = document.getElementById("ca");
-            console.log(data);
-
-            //d) If there are queryResults then dynamically
-            // create list items to append to the messages list.
-            if(data[0].queryResult){
-                var agent = document.createElement("li");
-                agent.className = 'balloon agent';
-                agent.innerHTML = data[0].queryResult.fulfillmentText;
-                messages.appendChild(agent);
-                objDiv.scrollTop = objDiv.scrollHeight;
-            }
+            data.forEach(function(base, i){
+                if(base){
+                    //d) Loop through all the queryResults, and responsesMessages
+                    // to show those in balloons.
+                    base.queryResult.responseMessages.forEach(function(item, index){
+                        if(item.text && item.text.text){
+                            var agent = document.createElement("li");
+                            agent.className = 'balloon agent';
+                            agent.innerHTML = item.text.text;
+                            messages.appendChild(agent);  
+                            objDiv.scrollTop = objDiv.scrollHeight;
+                        }
+                    });   
+                }
+            });
         });
 
         //welcome

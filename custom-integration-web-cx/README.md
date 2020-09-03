@@ -2,7 +2,24 @@
 
 **by: Lee Boonstra, Developer Advocate Conversational AI, Google Cloud**
 
-1. Import the Demo Agent, by creating a new CX agent, and import the cx-demo.json file (from the agent create screen)
+## LIVE EXAMPLE
+
+https://dialogflow-cx-demo-285510.uc.r.appspot.com
+
+## USE CONTAINER FOR YOUR OWN AGENTS
+
+This will deploy a custom App Engine Flex container with your own Dialogflow CX agent:
+
+1. Modify environment vars in Dockerfile
+
+  *You can see which values you will need to fill in, by looking into the URL bar of the Dialogflow CX console. Or clicking on the Agents Dropdown > View all agents.*
+
+1. `gcloud app deploy`
+
+## RUN LOCALLY
+
+1. Import the Demo Agent, by creating a new CX agent, and import the *cx-demo.
+json* file (from the agent create screen)
 
 1. https://cloud.google.com/docs/authentication/getting-started - get the service account.
 
@@ -16,14 +33,25 @@
 
     `npm install`
 
-1. Start the node app:
+1. Install Dialogflow V3beta1
 
-   `npm --PROJECT_ID=[your-gcp-project-id] --LOCATION=[your location] --AGENT_ID=[your-gcp-agent-id] run start`
+    *NOTE: We will have to download it from a Git branch, as the client-side npm package is not available yet.*
+
+    `npm i --save git:github.com/googleapis/nodejs-dialogflow.git#v3beta1`
+
+1. Start the node app:
 
    *You can see which values you will need to fill in, by looking into the URL bar of the Dialogflow CX console. Or clicking on the Agents Dropdown > View all agents.*
 
-   `npm --PROJECT_ID=chatbotportal-v3 --LOCATION=global --AGENT_ID=a4e8f92b-d85b-4259-906b-4debc163c856 run start`
+   For example:
 
-1. Browse to http://localhost:3000
+   ```
+    export LOCATION=global
+    export PROJECT_ID=dialogflow-cx-demo-285510
+    export AGENT_ID=6ef3e045-8c2f-4380-8559-0f0156ffc455
+    npm run start
+   ```
+
+1. Browse to http://localhost:8080
 
 1. start with: "Hi" and then "Which conversational tool should I use?"

@@ -1,10 +1,12 @@
 //1) These system variables can be set from the command-line with --PROJECT_ID, --PORT and --LANGUAGE
-const projectId = process.env.npm_config_PROJECT_ID;
-const location = process.env.npm_config_LOCATION;
-const agentId = process.env.npm_config_AGENT_ID;
+const projectId = process.env.PROJECT_ID;
+const location = process.env.LOCATION;
+const agentId = process.env.AGENT_ID;
 
-const port = ( process.env.npm_config_PORT || 3000 );
-const languageCode = (process.env.npm_config_LANGUAGE || 'en-US');
+console.log(projectId, location, agentId);
+
+const port = ( process.env.PORT || 8080 );
+const languageCode = (process.env.LANGUAGE || 'en-US');
 
 //2) Load all the libraries needed by this app
 const socketIo = require('socket.io');
@@ -14,17 +16,18 @@ const express = require('express');
 const path = require('path');
 // These are specific to Dialogflow
 const uuid = require('uuid');
+
 const df = require('@google-cloud/dialogflow').v3beta1;
-console.log(df);
+
 
 //3) Create an express app
 const app = express();
 
 //4) Setup Express, and load the static files and HTML page
 app.use(cors());
-app.use(express.static(__dirname + '/../ui/'));
+app.use(express.static(__dirname + '/ui/'));
 app.get('/', function(req, res) {
-    res.sendFile(path.join(__dirname + '/../ui/index.html'));
+    res.sendFile(path.join(__dirname + '/ui/index.html'));
 });
 
 //5) Create the Server and listen to the PORT variable
@@ -43,10 +46,10 @@ io.on('connect', (client) => {
 
     // 7B When the client sends 'welcome' events
     // then execute this block
-    //client.on('welcome', async function() {
-    //    const welcomeResults = await detectIntentByEventName('welcome');
-    //    client.emit('returnResults', welcomeResults);
-    //});
+    client.on('welcome', async function() {
+        const welcomeResults = await welcomeIntent(); //TODO ideally you want to solve this with events.
+        client.emit('returnResults', welcomeResults);
+    });
 
     //7) When the client sends 'message' events
     // then execute this block
@@ -112,14 +115,13 @@ function setupDialogflow(){
   * @return response promise
   */
  //16 
- async function detectIntentByEventName(eventName){
-    request.queryInput.event =  {
-        languageCode: languageCode,
-        name: eventName
+ async function welcomeIntent(){
+    request.queryInput.text =  {
+        text: 'hi'
     };
+    console.log(request);
     const responses = await sessionClient.detectIntent(request);
-    //remove the event, so the welcome event wont be triggered again
-    delete request.queryInput.event;
+    console.log(responses);
     return responses;
  }
 

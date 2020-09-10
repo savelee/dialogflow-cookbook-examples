@@ -8,6 +8,8 @@ console.log(projectId, location, agentId);
 const port = ( process.env.PORT || 8080 );
 const languageCode = (process.env.LANGUAGE || 'en-US');
 
+var  sessionClient, flowClient, startFlow, startPage, sessionId, sessionPath;
+
 //2) Load all the libraries needed by this app
 const socketIo = require('socket.io');
 const http = require('http');
@@ -39,20 +41,23 @@ server.listen(port, () => {
 
 //6 Socket.io listener, once the client connect to the server socket
 // then execute this block.
-io.on('connect', (client) => {
+io.on('connect', async (client) => {
     console.log(`Client connected [id=${client.id}]`);
     client.emit('server_setup', `Server connected [id=${client.id}]`);
 
 
     // 7B When the client sends 'welcome' events
     // then execute this block
-    client.on('welcome', async function() {
-        const welcomeResults = await welcomeIntent(); //TODO ideally you want to solve this with events.
-        client.emit('returnResults', welcomeResults);
-    });
+    // only when the client refreshes the page
+    //const welcomeResults = await detectIntent('hi'); //TODO ideally you want to solve this with events.
+    //io.to(client.id).emit('returnResults', welcomeResults);
 
     //7) When the client sends 'message' events
     // then execute this block
+    console.log('reset');
+    setupDialogflow();
+
+
     client.on('message', async function(msg) {
         //console.log(msg);
 
@@ -61,14 +66,14 @@ io.on('connect', (client) => {
         console.log(results); //NOTE: The results will be in queryResult.responseMessages
 
         //9) Return the Dialogflow after intent matching to the client UI.
-        client.emit('returnResults', results);
+        io.to(client.id).emit('returnResults', results);
     });
 });
 
 /**
  * Setup Dialogflow Integration
  */
-function setupDialogflow(){
+async function setupDialogflow(){
     //10) Dialogflow will need a session Id
     sessionId = uuid.v4();
     
@@ -79,7 +84,8 @@ function setupDialogflow(){
     //12) Create a session path from the Session client, 
     // which is a combination of the projectId and sessionId.
     sessionPath = `projects/${projectId}/locations/${location}/agents/${agentId}/sessions/${sessionId}`;
-
+    startFlow = `projects/${projectId}/locations/${location}/agents/${agentId}/flows/00000000-0000-0000-0000-000000000000`;
+    startPage = `${startFlow}/pages/d09f2dda-4882-47f3-9e61-2be40607f506`;
     //13) These objects are in the Dialogflow request
     request = {
       session: sessionPath,
@@ -87,6 +93,11 @@ function setupDialogflow(){
         languageCode: languageCode //NOTE: This moved into the queryInput i.so. queryInput.text
       }
     }
+
+    flowClient = new df.FlowsClient();
+    pageClient  = new df.PagesClient();
+    //var r = await pageClient.listPages({parent: startFlow});
+    //console.log(r);
 }
 
  /*
@@ -107,23 +118,3 @@ function setupDialogflow(){
     const responses = await sessionClient.detectIntent(request);
     return responses;
  }
-
-
- /*
-  * Dialogflow Detect Intent based on an Event
-  * @param eventName - string
-  * @return response promise
-  */
- //16 
- async function welcomeIntent(){
-    request.queryInput.text =  {
-        text: 'hi'
-    };
-    console.log(request);
-    const responses = await sessionClient.detectIntent(request);
-    console.log(responses);
-    return responses;
- }
-
- //Run this code.
- setupDialogflow();

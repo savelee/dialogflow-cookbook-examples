@@ -18,6 +18,8 @@ This will deploy a custom App Engine Flex container with your own Dialogflow CX 
 
 ## RUN LOCALLY
 
+1. Download the service account on your device, which has access to your CX project.
+
 1. Import the Demo Agent, by creating a new CX agent, and import the *cx-demo.
 json* file (from the agent create screen)
 

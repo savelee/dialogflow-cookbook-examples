@@ -35,12 +35,15 @@
     // execute this block
     const socket = socketio.on('connect', function() {
         console.log('connected');
-
+      
         //c) Run this block when the server responds with a fulfillment
         socketio.on('returnResults', function (data) {
+            console.log("results been sent");
+            console.log(data);
             var objDiv = document.getElementById("ca");
             data.forEach(function(base, i){
                 if(base){
+                    console.log(base);
                     //d) Loop through all the queryResults, and responsesMessages
                     // to show those in balloons.
                     base.queryResult.responseMessages.forEach(function(item, index){
@@ -55,9 +58,6 @@
                 }
             });
         });
-
-        //welcome
-        socketio.emit('welcome');
     });
 
     //e) Create some pointers to other HTML elements

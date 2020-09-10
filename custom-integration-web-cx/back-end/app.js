@@ -39,34 +39,38 @@ server.listen(port, () => {
     console.log('Running server on port %s', port);
 });
 
+var connectedUsers = {}; 
+
 //6 Socket.io listener, once the client connect to the server socket
 // then execute this block.
 io.on('connect', async (client) => {
     console.log(`Client connected [id=${client.id}]`);
     client.emit('server_setup', `Server connected [id=${client.id}]`);
 
+    connectedUsers[client.id] = client;
 
-    // 7B When the client sends 'welcome' events
-    // then execute this block
-    // only when the client refreshes the page
-    //const welcomeResults = await detectIntent('hi'); //TODO ideally you want to solve this with events.
-    //io.to(client.id).emit('returnResults', welcomeResults);
+    //reset
+    setupDialogflow();
+
 
     //7) When the client sends 'message' events
     // then execute this block
-    console.log('reset');
-    setupDialogflow();
-
+    
+    // 7B When the client sends 'welcome' events
+    // then execute this block
+    // only when the client refreshes the page
+    const welcomeResults = await detectIntent('hi'); //TODO ideally you want to solve this with events.
+    connectedUsers[client.id].emit('returnResults', welcomeResults);
 
     client.on('message', async function(msg) {
         //console.log(msg);
 
         //8) A promise to do intent matching
         const results = await detectIntent(msg);
-        console.log(results); //NOTE: The results will be in queryResult.responseMessages
+        //console.log(results); //NOTE: The results will be in queryResult.responseMessages
 
         //9) Return the Dialogflow after intent matching to the client UI.
-        io.to(client.id).emit('returnResults', results);
+        connectedUsers[client.id].emit('returnResults', results);
     });
 });
 

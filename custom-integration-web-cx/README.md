@@ -35,12 +35,6 @@ json* file (from the agent create screen)
 
     `npm install`
 
-1. Install Dialogflow V3beta1
-
-    *NOTE: We will have to download it from a Git branch, as the client-side npm package is not available yet.*
-
-    `npm i --save git:github.com/googleapis/nodejs-dialogflow.git#v3beta1`
-
 1. Start the node app:
 
    *You can see which values you will need to fill in, by looking into the URL bar of the Dialogflow CX console. Or clicking on the Agents Dropdown > View all agents.*

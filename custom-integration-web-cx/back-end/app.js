@@ -19,7 +19,7 @@ const path = require('path');
 // These are specific to Dialogflow
 const uuid = require('uuid');
 
-const df = require('@google-cloud/dialogflow').v3beta1;
+const df = require('@google-cloud/dialogflow-cx');
 
 
 //3) Create an express app
@@ -91,7 +91,15 @@ async function setupDialogflow(){
     
     //12) Create a session path from the Session client, 
     // which is a combination of the projectId and sessionId.
-    sessionPath = `projects/${projectId}/locations/${location}/agents/${agentId}/sessions/${sessionId}`;
+    //sessionPath = `projects/${projectId}/locations/${location}/agents/${agentId}/sessions/${sessionId}`;
+
+    const sessionPath = sessionClient.projectLocationAgentSessionPath(
+        projectId,
+        location,
+        agentId,
+        sessionId
+    );
+
     startFlow = `projects/${projectId}/locations/${location}/agents/${agentId}/flows/00000000-0000-0000-0000-000000000000`;
     startPage = `${startFlow}/pages/d09f2dda-4882-47f3-9e61-2be40607f506`;
     //13) These objects are in the Dialogflow request

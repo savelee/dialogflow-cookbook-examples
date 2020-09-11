@@ -48,6 +48,9 @@ io.on('connect', async (client) => {
     client.emit('server_setup', `Server connected [id=${client.id}]`);
 
     connectedUsers[client.id] = client;
+    for (const property in connectedUsers) {
+        console.log(`${property}: ${connectedUsers[property]}`);
+      }
 
     //reset
     setupDialogflow();
@@ -59,10 +62,11 @@ io.on('connect', async (client) => {
     // 7B When the client sends 'welcome' events
     // then execute this block
     // only when the client refreshes the page
-    const welcomeResults = await detectIntent('hi'); //TODO ideally you want to solve this with events.
-    connectedUsers[client.id].emit('returnResults', welcomeResults);
+    //const welcomeResults = await detectIntent('hi'); //TODO ideally you want to solve this with events.
+    //connectedUsers[client.id].emit('returnResults', welcomeResults);
 
-    client.on('message', async function(msg) {
+    connectedUsers[client.id].on('message', async function(msg) {
+        console.log("here!");
         //console.log(msg);
 
         //8) A promise to do intent matching
@@ -70,7 +74,7 @@ io.on('connect', async (client) => {
         //console.log(results); //NOTE: The results will be in queryResult.responseMessages
 
         //9) Return the Dialogflow after intent matching to the client UI.
-        connectedUsers[client.id].emit('returnResults', results);
+        client.emit('returnResults', results);
     });
 });
 

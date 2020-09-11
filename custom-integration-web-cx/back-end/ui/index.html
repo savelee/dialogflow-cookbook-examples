@@ -27,18 +27,17 @@
 
 
     <script>
-
+    const url = location.href;
     //a) Load socket io
-    const socketio = io();
+    const socketio = io(url);
     
     //b) Once socket.io made a connection with a server app,
     // execute this block
     const socket = socketio.on('connect', function() {
-        console.log('connected');
       
         //c) Run this block when the server responds with a fulfillment
-        socketio.on('returnResults', function (data) {
-            console.log("results been sent");
+        socket.on('returnResults', function (data) {
+            console.log('connected: ' + socket.id);
             console.log(data);
             var objDiv = document.getElementById("ca");
             data.forEach(function(base, i){
@@ -58,6 +57,11 @@
                 }
             });
         });
+
+        socket.on('disconnect', () => {
+          console.log('Client disconnected');
+          window.location.href = location.href;
+      });
     });
 
     //e) Create some pointers to other HTML elements

@@ -10,11 +10,10 @@ const path = require('path');
 const uuid = require('uuid');
 const df = require('dialogflow').v2beta1;
 
-//1
 const structJson = require('../back-end/structToJson');
+//1
 const pug = require('pug');
 const app = express();
-
 
 app.use(cors());
 app.use(express.static(__dirname + '/../ui/'));
@@ -41,11 +40,17 @@ io.on('connect', (client) => {
 
     client.on('message', async function(msg) {
         const results = await detectIntent(msg);
+        var responseMsg = results[0].queryResult.fulfillmentText;
  
         //2
         var payload = results[0].queryResult.fulfillmentMessages[0];
         let data = structJson.structProtoToJson(payload.payload);
-        client.emit('returnResults', templateHelper(data));
+        console.log(data);
+        if (data && data.custom){
+            client.emit('returnResults', templateHelper(data));
+        } else {
+            client.emit('returnResults', responseMsg); 
+        }
     });
 });
 
@@ -53,11 +58,11 @@ io.on('connect', (client) => {
 function templateHelper(payload) {
     var str = payload.custom.pug;
     if(Array.isArray(payload.custom.pug)) {
-      str = payload.custom.pug.join("");
+    str = payload.custom.pug.join("");
     };
-   
+
     var fn = pug.compile(str);
-    var text = fn(payload.custom.locals);
+    var text = fn(payload.custom.locals)
     return text;
 }
 

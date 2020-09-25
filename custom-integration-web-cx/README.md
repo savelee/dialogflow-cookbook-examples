@@ -18,12 +18,16 @@ This will deploy a custom App Engine Flex container with your own Dialogflow CX 
 
 ## RUN LOCALLY
 
-1. Download the service account on your device, which has access to your CX project.
+1. Download the service account key on your machine, which has access to your project: You can do this from the GCP console: IAM & Admin > Service Accounts. Take the account with the Dialogflow Integrations role, and create a JSON key. Store this somewhere save on your machine.
 
+    In your terminal run:
+    export GOOGLE_APPLICATION_CREDENTIALS=/path/to/your/JSONkey
+
+    For more info see https://cloud.google.com/docs/authentication/getting-started
+  
 1. Import the Demo Agent, by creating a new CX agent, and import the *cx-demo.
 json* file (from the agent create screen)
 
-1. https://cloud.google.com/docs/authentication/getting-started - get the service account.
 
 1. `gcloud services enable dialogflow.googleapis.com`
 
